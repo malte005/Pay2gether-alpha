@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.md.pay2gether"
-        minSdkVersion 9
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -15,6 +15,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
         }
     }
 }
@@ -26,4 +29,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.android.support:design:23.2.1'
+    compile 'com.getbase:floatingactionbutton:1.10.1'
 }

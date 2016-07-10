@@ -5,14 +5,15 @@ package objects;
  */
 public class User {
 
-    private int id;
+    private long id;
     private String name;
 
-    public User(String name) {
+    public User(long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

@@ -5,16 +5,17 @@ package objects;
  */
 public class Ausgabe {
 
-    private int id;
+    private long id;
     private double betrag;
-    private String name;
+    private String title;
 
-    public Ausgabe(double betrag, String name) {
+    public Ausgabe(long id, double betrag, String title) {
+        this.id =id;
         this.betrag = betrag;
-        this.name = name;
+        this.title = title;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -31,11 +32,11 @@ public class Ausgabe {
     }
 
     public String getName() {
-        return name;
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String title) {
+        this.title = title;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class Ausgabe {
         return "Ausgabe{" +
                 "id=" + id +
                 ", betrag=" + betrag +
-                ", name='" + name + '\'' +
+                ", name='" + title + '\'' +
                 '}';
     }
 }

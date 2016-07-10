@@ -7,16 +7,17 @@ import java.sql.Date;
  */
 public class Event {
 
-    private int id;
+    private long id;
     private Date datum;
     private String title;
 
-    public Event(Date datum, String title) {
+    public Event(long id, Date datum, String title) {
+        this.id = id;
         this.datum = datum;
         this.title = title;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

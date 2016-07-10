@@ -3,6 +3,10 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
+    <string name="nav_header_sub_title">Einkäufe einfach verwalten</string>
     <string name="action_settings">Einstellungen</string>
+
+    <!-- Buttons -->
+    <string name="btn_add_event">Event hinzufügen</string>
+    <string name="btn_add_user">Freund hinzufügen</string>
 </resources>

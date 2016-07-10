@@ -1,20 +1,37 @@
 package com.md.pay2gether;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import db.dao.EventDataSource;
+import objects.Event;
 
 public class EventsMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String LOG_TAG = EventsMainActivity.class.getSimpleName();
+
+    private EventDataSource eventDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +40,22 @@ public class EventsMainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //      FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //    fab.setOnClickListener(new View.OnClickListener() {
+        //@Override
+        //       public void onClick(View view) {
+        //          Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+        //                .setAction("Action", null).show();
+        //  }
+        // });
+
+        final View btn_add = findViewById(R.id.action_friend);
+        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_event);
+        menuMultipleActions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
             }
         });
 
@@ -39,7 +66,62 @@ public class EventsMainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        // TEST
+        eventDataSource = new EventDataSource(this);
+
+        Log.d(LOG_TAG, "Die Datenquelle wird geöffnet.");
+        eventDataSource.open();
+
+        Event event = null;
+        try {
+            //Log.d(LOG_TAG, "Methodentestn: " + formatDateTime(this, "1992-03.11"));
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            java.util.Date date = new java.util.Date();
+            dateFormat.format(date);
+
+            event = eventDataSource.insertEvent("TestEvent 2", "1999-12-11");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(LOG_TAG, "Es wurde der folgende Eintrag in die Datenbank geschrieben:");
+        Log.d(LOG_TAG, "ID: " + event.getId() + ", Inhalt: " + event.toString());
+
+        Log.d(LOG_TAG, "Folgende Einträge sind in der Datenbank vorhanden:");
+       try {
+            showAllEventListEntries();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(LOG_TAG, "Die Datenquelle wird geschlossen.");
+        eventDataSource.close();
+
+    }
+
+    // Event-Liste Anzeigen
+    private void showAllEventListEntries() throws ParseException {
+        List<Event> eventList = eventDataSource.getAllEvents();
+
+        if(eventList != null) {
+            List<String> events = new ArrayList<>();
+            for (Event event : eventList) {
+                events.add(event.getTitle() + " am " + event.getDatum());
+                            }
+
+            ArrayAdapter<String> eventArrayAdapter = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_list_item_1,
+                    events);
+            Log.d(LOG_TAG, "Events bei Ausgabe: " + events);
+            ListView eventListView = (ListView) findViewById(R.id.listview_events);
+            eventListView.setAdapter(eventArrayAdapter);
+        }
     }
 
     @Override
@@ -80,17 +162,13 @@ public class EventsMainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_events) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_friends) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
 
@@ -98,4 +176,6 @@ public class EventsMainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }
