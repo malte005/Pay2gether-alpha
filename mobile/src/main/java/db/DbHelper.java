@@ -124,4 +124,30 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //######################## A U S G A B E //########################
 
+
+    //######################## S C H U L D E N //########################
+
+    public static final String SCHULDEN_TABLE_NAME = "schulden";
+
+    //Tabellendafinition
+    public static abstract class SchuldenTable implements BaseColumns {
+        public static final String COLUMN_NAME_BETRAG = "betrag";
+        public static final String COLUMN_NAME_FK_USER_VON = "userVon_id";
+        public static final String COLUMN_NAME_FK_USER_AN = "userAn_id";
+    }
+
+    public static abstract class SchuldenSQL {
+        private static final String SQL_CREATE_SCHULDEN =
+                "CREATE TABLE " + SCHULDEN_TABLE_NAME + " (" +
+                        SchuldenTable._ID + INTEGER_TYPE + " PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
+                        SchuldenTable.COLUMN_NAME_BETRAG + DECIMAL_TYPE + COMMA_SEP +
+                        SchuldenTable.COLUMN_NAME_FK_USER_VON + INTEGER_TYPE + COMMA_SEP +
+                        SchuldenTable.COLUMN_NAME_FK_USER_AN + INTEGER_TYPE +
+                        " )";
+
+        private static final String SQL_DELETE_AUSGABE =
+                "DROP TABLE IF EXISTS " + SCHULDEN_TABLE_NAME;
+    }
+
+    //######################## S C H U L D E N //########################
 }

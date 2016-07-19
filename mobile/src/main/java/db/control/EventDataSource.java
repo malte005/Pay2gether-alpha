@@ -1,4 +1,4 @@
-package db.dao;
+package db.control;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.DbHelper;
-import objects.Event;
+import modell.Event;
 
 /**
  * Created by Malte on 29.06.2016.
@@ -49,14 +49,10 @@ public class EventDataSource {
         contentValues.put(DbHelper.EventTable.COLUMN_NAME_TITLE, title);
         contentValues.put(DbHelper.EventTable.COLUMN_NAME_DATE, datum);
 
-        Log.d(LOG_TAG, "end ContenValues");
-
         long insertId = database.insert(DbHelper.EVENT_TABLE_NAME, null, contentValues);
 
-        Log.d(LOG_TAG, "start cursor");
-
         Cursor cursor = database.query(DbHelper.EVENT_TABLE_NAME,
-                new String[]{DbHelper.EventTable._ID, DbHelper.EventTable.COLUMN_NAME_DATE, DbHelper.EventTable.COLUMN_NAME_TITLE}, DbHelper.EventTable._ID + "=" + insertId,
+                null, DbHelper.EventTable._ID + " = " + insertId,
                 null, null, null, null);
 
         Log.d(LOG_TAG, "end cursor");
@@ -97,12 +93,24 @@ public class EventDataSource {
         return event;
     }
 
+    // Hole Event aus DB
+    public Event getEvent(long id) throws ParseException {
+        Event event;
+
+        Cursor cursor = database.query(DbHelper.EVENT_TABLE_NAME, null, DbHelper.EventTable._ID + " = ? ",
+                new String[]{Long.toString(id)}, null, null, null);
+
+        event = cursorToEventObject(cursor);
+
+        return event;
+    }
+
     // Liste aller Events zurückgeben
     public List<Event> getAllEvents() throws ParseException {
         List<Event> eventList = new ArrayList<>();
 
         Cursor cursor = database.query(DbHelper.EVENT_TABLE_NAME,
-                new String[]{DbHelper.EventTable._ID, DbHelper.EventTable.COLUMN_NAME_DATE, DbHelper.EventTable.COLUMN_NAME_TITLE}, null, null, null, null, null);
+                null, null, null, null, null, null);
 
         cursor.moveToFirst();
         Event event;
@@ -120,26 +128,20 @@ public class EventDataSource {
     }
 
 
-    public boolean updateEvent(long id, String titel, Date datum) {
+    public int updateEvent(long id, String titel, Date datum) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String date = sdf.format(datum);
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("title", titel);
-        contentValues.put("date", date);
+        contentValues.put(DbHelper.EventTable.COLUMN_NAME_TITLE, titel);
+        contentValues.put(DbHelper.EventTable.COLUMN_NAME_DATE, date);
 
-        //database.update("event", contentValues, "id = ? ", new String[]{Integer.toString(id)});
-        return true;
+        return database.update(DbHelper.EVENT_TABLE_NAME, contentValues, "id = ? ", new String[]{Long.toString(id)});
     }
 
     // Event löschen
-   /* public Integer deleteEvent(long id) {
-        return database.delete(EventDataSource.EventTable.TABLE_NAME,
-                "ID = ? ",
-                new String[]{Long.toString(id)});
-    }*/
-    public void deleteEvent(long id) {
-        database.delete(DbHelper.EVENT_TABLE_NAME,
+    public int deleteEvent(long id) {
+        return database.delete(dbHelper.EVENT_TABLE_NAME,
                 "ID = ? ",
                 new String[]{Long.toString(id)});
     }

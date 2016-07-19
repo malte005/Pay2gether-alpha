@@ -2,6 +2,7 @@ package com.md.pay2gether;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,17 +15,14 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import db.dao.EventDataSource;
-import objects.Event;
+import db.control.EventDataSource;
+import modell.Event;
 
 public class EventsMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,22 +38,14 @@ public class EventsMainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //      FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        //    fab.setOnClickListener(new View.OnClickListener() {
-        //@Override
-        //       public void onClick(View view) {
-        //          Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-        //                .setAction("Action", null).show();
-        //  }
-        // });
+        //final View btn_add = findViewById(R.id.action_friend);
+        //final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
+        //final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_event);
 
-        final View btn_add = findViewById(R.id.action_friend);
-        final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
-        final FloatingActionButton actionA = (FloatingActionButton) findViewById(R.id.action_event);
-        menuMultipleActions.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_add_product).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Snackbar.make(view, "Hello Snackbar", Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -78,7 +68,6 @@ public class EventsMainActivity extends AppCompatActivity
 
         Event event = null;
         try {
-            //Log.d(LOG_TAG, "Methodentestn: " + formatDateTime(this, "1992-03.11"));
             SimpleDateFormat dateFormat = new SimpleDateFormat(
                     "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             java.util.Date date = new java.util.Date();
@@ -93,7 +82,7 @@ public class EventsMainActivity extends AppCompatActivity
         Log.d(LOG_TAG, "ID: " + event.getId() + ", Inhalt: " + event.toString());
 
         Log.d(LOG_TAG, "Folgende Einträge sind in der Datenbank vorhanden:");
-       try {
+        try {
             showAllEventListEntries();
         } catch (ParseException e) {
             e.printStackTrace();
@@ -108,11 +97,11 @@ public class EventsMainActivity extends AppCompatActivity
     private void showAllEventListEntries() throws ParseException {
         List<Event> eventList = eventDataSource.getAllEvents();
 
-        if(eventList != null) {
+        if (eventList != null) {
             List<String> events = new ArrayList<>();
             for (Event event : eventList) {
                 events.add(event.getTitle() + " am " + event.getDatum());
-                            }
+            }
 
             ArrayAdapter<String> eventArrayAdapter = new ArrayAdapter<>(
                     this,

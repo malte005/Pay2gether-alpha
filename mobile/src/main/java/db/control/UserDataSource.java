@@ -1,4 +1,4 @@
-package db.dao;
+package db.control;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.DbHelper;
-import objects.User;
+import modell.User;
 
 /**
  * Created by Malte on 01.07.2016.
@@ -23,8 +23,8 @@ public class UserDataSource {
     private DbHelper dbHelper;
 
     public UserDataSource(Context context) {
-        Log.d(LOG_TAG, "UserDataSource erzeugt jetzt den dbHelper.");
         dbHelper = new DbHelper(context);
+        Log.d(LOG_TAG, "UserDataSource hat den dbHelper erzeugt.");
     }
 
     public void open() {
@@ -46,8 +46,10 @@ public class UserDataSource {
 
         long insertId = database.insert(DbHelper.USER_TABLE_NAME, null, contentValues);
 
+        Log.d(LOG_TAG, "start cursor");
+
         Cursor cursor = database.query(DbHelper.USER_TABLE_NAME,
-                new String[]{DbHelper.UserTable._ID, DbHelper.UserTable.COLUMN_NAME_NAME}, DbHelper.UserTable._ID + "=" + insertId,
+                null, DbHelper.UserTable._ID + " = " + insertId,
                 null, null, null, null);
 
         cursor.moveToFirst();
@@ -60,22 +62,34 @@ public class UserDataSource {
     //User Hilfsmethode
     private User cursorToUserObject(Cursor cursor) {
         int idIndex = cursor.getColumnIndex(DbHelper.UserTable._ID);
-        int idNmae = cursor.getColumnIndex(DbHelper.UserTable.COLUMN_NAME_NAME);
+        int idName = cursor.getColumnIndex(DbHelper.UserTable.COLUMN_NAME_NAME);
 
         long id = cursor.getLong(idIndex);
-        String name = cursor.getString(idNmae);
+        String name = cursor.getString(idName);
 
         User user = new User(id, name);
 
         return user;
     }
 
+    // Hole User aus DB
+    public User getUser(long id) {
+        User user;
+
+        Cursor cursor = database.query(DbHelper.USER_TABLE_NAME, null, DbHelper.UserTable._ID + " = ? ",
+                new String[]{Long.toString(id)}, null, null, null);
+
+        user = cursorToUserObject(cursor);
+
+        return user;
+    }
+
     // Liste aller User zurückgeben
-    public List<User> getAllEvents() {
+    public List<User> getAllUser() {
         List<User> eventList = new ArrayList<>();
 
         Cursor cursor = database.query(DbHelper.USER_TABLE_NAME,
-                new String[]{DbHelper.UserTable._ID, DbHelper.UserTable.COLUMN_NAME_NAME}, null, null, null, null, null);
+                null, null, null, null, null, null);
 
         cursor.moveToFirst();
         User user;
@@ -95,14 +109,14 @@ public class UserDataSource {
     public int updateUser(long id, String name) {
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("title", name);
+        contentValues.put(DbHelper.UserTable.COLUMN_NAME_NAME, name);
 
         return database.update(DbHelper.USER_TABLE_NAME, contentValues, "id = ? ", new String[]{Long.toString(id)});
     }
 
     //User löschen
-    public void deleteUser(long id){
-        database.delete(DbHelper.USER_TABLE_NAME,
+    public int deleteUser(long id) {
+        return database.delete(DbHelper.USER_TABLE_NAME,
                 "ID = ? ",
                 new String[]{Long.toString(id)});
     }

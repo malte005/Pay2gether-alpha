@@ -23,15 +23,39 @@
 
     <include layout="@layout/content_events_main" />
 
-    <include layout="@layout/fab"/>
-
-
-  <!--  <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/multiple_actions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_btn_add" /> -->
+        android:layout_gravity="end|bottom"
+        app:fab_addButtonColorNormal="@color/colorAccent"
+        app:fab_addButtonPlusIconColor="@color/colorBackground"
+        app:fab_colorPressed="@color/colorAccent"
+        app:fab_labelStyle="@style/menu_labels_style">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            app:fab_colorNormal="@color/colorBackground"
+            app:fab_icon="@drawable/ic_menu_local_grocery_store"
+            app:fab_size="mini"
+            app:layout_behavior="helper.FloatingActionButtonBehavior" />
+        <!--fab:fab_title="@string/btn_add_event" -->
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/colorBackground"
+            app:fab_icon="@drawable/ic_btn_add_friend"
+            app:fab_size="mini"
+            app:layout_behavior="helper.FloatingActionButtonBehavior" />
+        <!--fab:fab_title="@string/btn_add_user" -->
+
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </android.support.design.widget.CoordinatorLayout>

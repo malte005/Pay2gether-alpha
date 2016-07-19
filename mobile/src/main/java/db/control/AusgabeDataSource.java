@@ -1,4 +1,4 @@
-package db.dao;
+package db.control;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.DbHelper;
-import objects.Ausgabe;
-import objects.Event;
-import objects.User;
+import modell.Ausgabe;
+import modell.Event;
+import modell.User;
 
 /**
  * Created by Malte on 03.07.2016.
@@ -72,17 +72,29 @@ public class AusgabeDataSource {
 
         long id = cursor.getLong(idIndex);
         String title = cursor.getString(idTitle);
-        String stringBetrag = cursor.getString(idBetrag);
+        float betrag = cursor.getFloat(idBetrag);
         String stringEventId = cursor.getString(idEvent);
         String stringUserId = cursor.getString(idUser);
 
-        Ausgabe ausgabe = new Ausgabe(id, Double.valueOf(stringBetrag), title);
+        Ausgabe ausgabe = new Ausgabe(id, betrag, title, );
+
+        return ausgabe;
+    }
+
+    // Hole Ausgabe aus DB
+    public Ausgabe getAusgabe(long id) {
+        Ausgabe ausgabe;
+
+        Cursor cursor = database.query(DbHelper.USER_TABLE_NAME, null, DbHelper.AusgabeTable._ID + " = ? ",
+                new String[]{Long.toString(id)}, null, null, null);
+
+        ausgabe = cursorToAusgabeObject(cursor);
 
         return ausgabe;
     }
 
     // Liste aller Ausgaben zurückgeben
-    public List<Ausgabe> getAllAusgabe() {
+    public List<Ausgabe> getAllAusgaben() {
         List<Ausgabe> ausgabeList = new ArrayList<>();
 
         Cursor cursor = database.query(DbHelper.AUSGABE_TABLE_NAME,
@@ -104,18 +116,19 @@ public class AusgabeDataSource {
     }
 
 
-    public int updateAusgabe(long id, String titel, Double betrag) {
+    public int updateAusgabe(long id, String titel, Double betrag, User user) {
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("title", titel);
-        contentValues.put("betrag", betrag);
+        contentValues.put(DbHelper.AusgabeTable.COLUMN_NAME_TITLE, titel);
+        contentValues.put(DbHelper.AusgabeTable.COLUMN_NAME_BETRAG, betrag);
+        contentValues.put(DbHelper.AusgabeTable.COLUMN_NAME_FK_USER, user.getId());
 
-        return database.update("event", contentValues, "id = ? ", new String[]{Long.toString(id)});
+        return database.update(DbHelper.AUSGABE_TABLE_NAME, contentValues, "id = ? ", new String[]{Long.toString(id)});
     }
 
     // Ausgabe löschen
-    public void deleteEvent(long id){
-        database.delete(DbHelper.EVENT_TABLE_NAME,
+    public int deleteAusgabe(long id) {
+        return database.delete(DbHelper.AUSGABE_TABLE_NAME,
                 "ID = ? ",
                 new String[]{Long.toString(id)});
     }
